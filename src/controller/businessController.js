@@ -1,6 +1,5 @@
 // controllers/restaurantController.js
 import { pool } from "../config/db.js";
-import { pool as user_pool } from "../../../user-service/src/config/db.js";
 import {
   createRestaurant,
   getRestaurantByEmail,
@@ -216,19 +215,29 @@ export const fetchRecommendedRestaurants = async (req, res) => {
       return res.status(400).json({ message: "User ID is required." });
     }
 
-    // Fetch user preferences
-    const [rows] = await user_pool.query(
-      "SELECT categories FROM user_preferences WHERE user_id = ?",
-      [userId]
+    // Fetch user preferences via HTTP from user-service
+    const userServiceUrl =
+      process.env.USER_SERVICE_URL || "http://localhost:3001"; // Default to localhost:3001
+    const response = await fetch(
+      `${userServiceUrl}/api/user/preferences/${userId}`
     );
 
-    if (!rows.length || !rows[0].categories) {
+    if (!response.ok) {
+      console.log(
+        "User-service unavailable or error. Fetching fallback recommendations."
+      );
+      const recommendedRestaurants = await getRecommendedRestaurants([]);
+      return res.status(200).json(recommendedRestaurants);
+    }
+
+    const data = await response.json();
+    if (!data.categories) {
       console.log("No preferences found. Fetching fallback recommendations.");
       const recommendedRestaurants = await getRecommendedRestaurants([]);
       return res.status(200).json(recommendedRestaurants);
     }
 
-    const preferencesRaw = String(rows[0].categories || "");
+    const preferencesRaw = String(data.categories || "");
     const preferences = preferencesRaw
       .split(",")
       .map((cat) => cat.trim())
