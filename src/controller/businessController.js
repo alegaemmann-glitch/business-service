@@ -11,7 +11,11 @@ import {
   getAllRestaurants,
   getBusinessLocations,
 } from "../../src/model/businessModel.js";
-// import { getUserPreferencesById } from "../../src/model/userModel.js";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const businessServiceBaseURL = process.env.BUSINESS_SERVICE_URL;
 
 export const registerRestaurant = async (req, res) => {
   try {
@@ -113,7 +117,7 @@ export const updateBusinessLogo = async (req, res) => {
   try {
     const userId = req.params.userId;
     const logoPath = req.file
-      ? `http://localhost:3003/uploads/logo/${req.file.filename}`
+      ? `${businessServiceBaseURL}/uploads/logo/${req.file.filename}`
       : null;
 
     if (!logoPath) {
@@ -148,7 +152,7 @@ export const createMenuItem = async (req, res) => {
     }
 
     const image = req.file
-      ? `http://localhost:3003/uploads/products/${req.file.filename}`
+      ? `${businessServiceBaseURL}/uploads/products/${req.file.filename}`
       : null;
 
     const newProductId = await addProductToMenu({
@@ -217,7 +221,7 @@ export const fetchRecommendedRestaurants = async (req, res) => {
 
     // Fetch user preferences via HTTP from user-service
     const userServiceUrl =
-      process.env.USER_SERVICE_URL || "http://localhost:3001"; // Default to localhost:3001
+      process.env.USER_SERVICE_URL || "http://localhost:3003"; // Default to localhost:3003
     const response = await fetch(
       `${userServiceUrl}/api/user/preferences/${userId}`
     );

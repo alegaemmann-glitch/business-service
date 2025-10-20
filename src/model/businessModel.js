@@ -1,7 +1,10 @@
 import { pool } from "../config/db.js";
+import dotenv from "dotenv";
 
-const DEFAULT_LOGO_URL =
-  "http://localhost:3003/uploads/logo/default-business-logo.png";
+dotenv.config();
+
+const businessServiceBaseURL = process.env.BUSINESS_SERVICE_URL;
+const DEFAULT_LOGO_URL = `${businessServiceBaseURL}/uploads/logo/default-business-logo.png`;
 
 export const createRestaurant = async ({
   name,
