@@ -119,9 +119,8 @@ export const fetchUserBusiness = async (req, res) => {
 export const updateBusinessLogo = async (req, res) => {
   try {
     const userId = req.params.userId;
-    const logoPath = req.file
-      ? `${businessServiceBaseURL}/uploads/logo/${req.file.filename}`
-      : null;
+    // ✅ Save relative path only
+    const logoPath = req.file ? `/uploads/logo/${req.file.filename}` : null;
 
     if (!logoPath) {
       return res.status(400).json({ message: "No image uploaded." });
@@ -132,9 +131,11 @@ export const updateBusinessLogo = async (req, res) => {
       userId,
     ]);
 
-    res
-      .status(200)
-      .json({ message: "Logo updated successfully.", logo: logoPath });
+    // ✅ Return full URL in response
+    res.status(200).json({
+      message: "Logo updated successfully.",
+      logo: `${businessServiceBaseURL}${logoPath}`,
+    });
   } catch (error) {
     console.error("Error updating logo:", error);
     res.status(500).json({ message: "Server error while updating logo." });
@@ -154,9 +155,8 @@ export const createMenuItem = async (req, res) => {
       return res.status(404).json({ message: "Business not found." });
     }
 
-    const image = req.file
-      ? `${businessServiceBaseURL}/uploads/products/${req.file.filename}`
-      : null;
+    // ✅ Save relative path only
+    const image = req.file ? `/uploads/products/${req.file.filename}` : null;
 
     const newProductId = await addProductToMenu({
       category,
@@ -168,9 +168,12 @@ export const createMenuItem = async (req, res) => {
       image,
     });
 
-    res
-      .status(201)
-      .json({ message: "Product added successfully.", id: newProductId });
+    // ✅ Return full URL in response
+    res.status(201).json({
+      message: "Product added successfully.",
+      id: newProductId,
+      image: image ? `${businessServiceBaseURL}${image}` : null,
+    });
   } catch (error) {
     console.error("Error adding product:", error);
     res.status(500).json({ message: "Server error." });
@@ -224,7 +227,7 @@ export const fetchRecommendedRestaurants = async (req, res) => {
 
     // Fetch user preferences via HTTP from user-service
     const userServiceUrl =
-      process.env.USER_SERVICE_URL || "http://localhost:3003"; // Default to localhost:3003
+      process.env.USER_SERVICE_URL || "http://localhost:3002"; // Default to localhost:3003
     const response = await fetch(
       `${userServiceUrl}/api/user/preferences/${userId}`
     );
