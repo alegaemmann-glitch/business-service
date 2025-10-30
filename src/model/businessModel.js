@@ -3,7 +3,8 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const businessServiceBaseURL = process.env.BUSINESS_SERVICE_URL;
+const businessServiceBaseURL =
+  process.env.BUSINESS_SERVICE_URL || "http://localhost:3003";
 const DEFAULT_LOGO_URL = `${businessServiceBaseURL}/uploads/logo/default-business-logo.png`;
 
 export const createRestaurant = async ({
@@ -149,4 +150,21 @@ export const getBusinessLocations = async () => {
     `SELECT id, businessName, latitude, longitude, address FROM business`
   );
   return rows;
+};
+
+//ADMIN
+
+export const getAllBusinesses = async () => {
+  const [rows] = await pool.query("SELECT * FROM business");
+  return rows; // ✅ Always an array
+};
+
+export const updateBusinessStatus = (businessId, newStatus) => {
+  return new Promise((resolve, reject) => {
+    const query = "UPDATE business SET status = ? WHERE id = ?";
+    pool.query(query, [newStatus, businessId], (err, result) => {
+      if (err) return reject(err);
+      resolve(result);
+    });
+  });
 };

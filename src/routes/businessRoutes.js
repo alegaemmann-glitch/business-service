@@ -9,12 +9,16 @@ import {
   fetchRecommendedRestaurants,
   fetchAllRestaurants,
   fetchBusinessLocations,
+  fetchBusiness,
+  changeBusinessStatus,
 } from "../controller/businessController.js";
-import { authenticate } from "../middleware/auth.js";
 import { upload } from "../middleware/upload.js";
-import { pool } from "../config/db.js";
 
 const router = express.Router();
+
+//ADMIN
+router.get("/business", fetchBusiness);
+router.put("/business/:id/status", changeBusinessStatus);
 
 router.get("/all-restaurants", fetchAllRestaurants);
 router.get("/locations", fetchBusinessLocations);
