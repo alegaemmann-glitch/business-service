@@ -17,7 +17,7 @@ const PORT = process.env.BUSINESS_PORT || 3003;
 
 app.use("/api/business", businessRoutes);
 
-app.use("/uploads", express.static("uploads"));
+// app.use("/uploads", express.static("uploads"));
 
 app.listen(PORT, async () => {
   console.log(chalk.green(`Business Server running on port ${PORT}`));
