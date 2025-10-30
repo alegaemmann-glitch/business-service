@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "chalk": "^5.4.1",
+    "cloudinary": "^1.41.3",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
     "express": "^5.1.0",
@@ -20,6 +21,7 @@
     "leaflet": "^1.9.4",
     "leaflet-geosearch": "^4.2.0",
     "multer": "^2.0.0",
+    "multer-storage-cloudinary": "^4.0.0",
     "mysql2": "^3.14.1",
     "react-leaflet": "^5.0.0"
   },

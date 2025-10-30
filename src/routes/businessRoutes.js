@@ -12,7 +12,8 @@ import {
   fetchBusiness,
   changeBusinessStatus,
 } from "../controller/businessController.js";
-import { upload } from "../middleware/upload.js";
+// import { upload } from "../middleware/upload.js";
+import { upload } from "../middleware/cloudinaryUpload.js";
 
 const router = express.Router();
 

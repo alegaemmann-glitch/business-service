@@ -119,8 +119,8 @@ export const fetchUserBusiness = async (req, res) => {
 export const updateBusinessLogo = async (req, res) => {
   try {
     const userId = req.params.userId;
-    // ✅ Save relative path only
-    const logoPath = req.file ? `/uploads/logo/${req.file.filename}` : null;
+    // Cloudinary provides the full URL in req.file.path
+    const logoPath = req.file?.path || null;
 
     if (!logoPath) {
       return res.status(400).json({ message: "No image uploaded." });
@@ -131,10 +131,9 @@ export const updateBusinessLogo = async (req, res) => {
       userId,
     ]);
 
-    // ✅ Return full URL in response
     res.status(200).json({
       message: "Logo updated successfully.",
-      logo: `${businessServiceBaseURL}${logoPath}`,
+      logo: logoPath,
     });
   } catch (error) {
     console.error("Error updating logo:", error);
@@ -155,8 +154,8 @@ export const createMenuItem = async (req, res) => {
       return res.status(404).json({ message: "Business not found." });
     }
 
-    // ✅ Save relative path only
-    const image = req.file ? `/uploads/products/${req.file.filename}` : null;
+    // Cloudinary provides the full URL in req.file.path
+    const image = req.file?.path || null;
 
     const newProductId = await addProductToMenu({
       category,
@@ -168,11 +167,10 @@ export const createMenuItem = async (req, res) => {
       image,
     });
 
-    // ✅ Return full URL in response
     res.status(201).json({
       message: "Product added successfully.",
       id: newProductId,
-      image: image ? `${businessServiceBaseURL}${image}` : null,
+      image: image,
     });
   } catch (error) {
     console.error("Error adding product:", error);
